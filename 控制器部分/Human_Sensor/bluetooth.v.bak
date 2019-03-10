@@ -1,0 +1,6 @@
+module bluetooth
+(
+input reg[1:0] c_s,
+output reg[8:0] single
+)
+

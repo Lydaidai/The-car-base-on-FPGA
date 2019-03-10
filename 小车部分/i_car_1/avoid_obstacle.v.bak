@@ -1,0 +1,10 @@
+module avoid_obstacle(clk,);//超声波避障模块
+
+
+
+
+
+
+
+
+endmodule

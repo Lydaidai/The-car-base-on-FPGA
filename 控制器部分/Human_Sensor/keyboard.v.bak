@@ -1,0 +1,168 @@
+module Keyboard					  //矩阵键盘模块
+(
+	input clk,						  //输入时钟信号
+	input reset,					  //调试清零信号
+	input [3:0] R,             //读取矩阵键行输入   
+	output reg [3:0] C,        //给矩阵键盘列输出
+	output reg [3:0] out    	//键盘输出值
+);
+
+
+wire key_clk = clk;
+//各个状态（独热编码，有好处）
+parameter NULL=6'b000_001;     //无按键
+parameter COL0=6'b000_010;     
+parameter COL1=6'b000_100;		 
+parameter COL2=6'b001_000;		 
+parameter COL3=6'b010_000;     
+parameter PRESSED=6'b100_000;  //有按键
+
+reg[5:0] current,next;
+
+//状态方程
+always @ (posedge key_clk , negedge reset)
+	if(!reset)
+		begin	
+			current<=NULL;
+		end
+	else
+		begin
+			current<=next;
+		end
+
+//驱动方程
+always @ *     
+	case(current)
+		NULL:
+			if(R!=4'b1111)
+				begin
+					next<=COL0;
+				end
+			else
+				begin
+					next<=NULL;
+				end
+		COL0:
+			if(R!=4'b1111)   
+				begin
+					next<=PRESSED;
+				end
+			else
+				begin
+					next<=COL1;
+				end
+		COL1:
+			if(R!=4'b1111)
+				begin
+					next<=PRESSED;
+				end
+			else
+				begin
+					next<=COL2;
+				end
+		COL2:
+			if(R!=4'b1111)
+				begin
+					next<=PRESSED;
+				end
+			else
+				begin
+					next<=COL3;
+				end
+		COL3:
+			if(R!=4'b1111)
+				begin
+					next<=PRESSED;
+				end
+			else
+				begin
+					next<=NULL;
+				end
+		PRESSED:
+			if(R!=4'b1111)
+				begin
+					next<=PRESSED;
+				end
+			else
+				begin
+					next<=NULL;
+				end
+	endcase
+
+	
+//输出方程
+reg isPressed;							//标记按键状态
+reg [3:0] value_col,value_row;	//记录行列信号
+
+always @ (posedge key_clk,negedge reset)
+	if(!reset)
+		begin
+			C<=4'b0000;             
+			isPressed<=0;
+		end
+	else
+	   case(next)
+			NULL:
+				begin
+					C<=4'b0000;
+					isPressed<=0;
+				end
+			COL0: C<=4'b1110;  
+			COL1: C<=4'b1101;
+			COL2: C<=4'b1011;
+			COL3: C<=4'b0111;	
+			PRESSED:
+				begin
+					value_col<=C;
+					value_row<=R;
+					isPressed<=1;
+				end
+		endcase
+//状态机结束
+
+//将行列信号译为输出数字
+always @ (posedge key_clk,negedge reset)
+	if(!reset)
+		begin
+			out=4'b0000;
+		end
+	else
+		if(isPressed)
+			case({value_col,value_row})//????
+				8'b1110_1110:
+					out=4'h1;
+				8'b1110_1101:
+					out=4'h2;
+				8'b1110_1011:
+					out=4'h3;
+					
+				8'b1101_1110:
+					out=4'h4;
+				8'b1101_1101:
+					out=4'h5;
+				8'b1101_1011:
+					out=4'h6;
+					
+				8'b1011_1110:
+					out=4'h7;
+				8'b1011_1101:
+					out=4'h8;
+				8'b1011_1011:
+					out=4'h9;
+					
+				8'b0111_1110:
+					out=4'h0;	
+				8'b0111_1101:
+					out=4'ha;//开始
+				8'b0111_1011:
+					out=4'hb;//清零
+				8'b0111_0111:
+					out=4'hc;//确认
+				
+				default:
+					out=4'hf;
+			endcase
+		else
+			out=4'hf;
+			
+endmodule

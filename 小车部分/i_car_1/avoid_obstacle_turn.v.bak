@@ -1,0 +1,14 @@
+module avoid_obstacle_turn(clk,right_time,left_time,turn_right,turn_left);//通过比较回响时间进行判断，给出转向信号
+input clk,right_time[19:0],left_time[19:0];
+output turn_left,turn_right;
+
+always@(posedge clk)
+begin
+	if((left_time>=30000)&&(right_time>=30000))
+	begin
+	
+	end
+
+
+
+end

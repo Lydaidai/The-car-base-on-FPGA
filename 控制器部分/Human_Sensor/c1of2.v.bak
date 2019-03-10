@@ -1,0 +1,18 @@
+module c1of2(
+input [2:0] c_s_1,
+input [2:0] c_s_2,
+input con,
+input clk,
+output reg [2:0] c_s_o
+);
+
+always @(posedge clk)
+begin
+	if(con)
+		c_s_o <= c_s_1;
+	else 
+		c_s_o <= c_s_2;
+end
+
+
+endmodule 

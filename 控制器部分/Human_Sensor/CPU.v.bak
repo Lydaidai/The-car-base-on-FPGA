@@ -1,0 +1,7 @@
+module CPU
+(
+input mpuin,
+input soundin,
+output reg[1:0] c_s
+)
+

@@ -1,0 +1,16 @@
+module NOTTHIS(
+input [2:0] c_s_1,
+input [2:0] c_s_2,
+inout con,
+input clk,
+output reg [2:0] c_s_o
+);
+
+always @(posedge clk)
+begin
+	if(con)
+		c_s_o <= c_s_2;
+	else 
+		c_s_o <= c_s_1;
+end
+endmodule 

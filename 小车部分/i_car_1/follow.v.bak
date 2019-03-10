@@ -1,0 +1,16 @@
+module follow(clk,signal,turn_right,turn_left);//循迹模块，根据输入信号的不同，做不同的动作
+input clk;
+input [3:0]signal;	//四对红外对管发出的信号
+output turn_left,turn_right;
+
+
+
+
+
+
+
+
+
+
+
+endmodule

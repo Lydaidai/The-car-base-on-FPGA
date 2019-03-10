@@ -1,0 +1,4 @@
+module avoid_obstacle_trig(clk,,start,trig);		//给超声波模块触发信号，因为是同时运行，可以把触发信号放到一起
+input clk,start;
+output trig;
+
